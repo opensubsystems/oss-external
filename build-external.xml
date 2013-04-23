@@ -1,0 +1,1616 @@
+<?xml version="1.0"?>
+
+<!--
+ * Copyright (c) 2003 - 2010 OpenSubsystems. All rights reserved.
+ * 
+ * Project: OpenSubsystems
+ * 
+ * $Id: build-external.xml,v 1.41 2007/09/11 05:42:17 bastafidli Exp $
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+-->
+
+<!--
+ * Build file to install files required by the external projects.
+ *
+ * This file expects that variable projectname contains name of the project
+ * or product, which will be used the external files
+ *
+ * @version $Id: build-external.xml,v 1.41 2007/09/11 05:42:17 bastafidli Exp $
+ * @author Miro Halas
+ * @code.reviewer Miro Halas
+ * @code.reviewed 1.27 2006/04/13 06:26:09 bastafidli
+-->
+
+<project name="external" basedir="." default="help">
+
+   <!-- Load default build properties -->
+   <property file="build.properties"/>
+   
+   <!-- Load locations of external projects -->
+   <property file="${external_projects_home}/external.properties"/>
+
+   <!-- ==================================================================== -->
+   <!-- JUnit                                                                -->
+   <!-- Runtime - may be required to run tests inside of application server  --> 
+   <!-- ==================================================================== -->
+   <target name="installjunit" unless="skip.thirdparty.packages"
+           description="Install JUnit libraries">
+      <available file="${junit_home}" type="dir" property="junit.distro.present"/>
+      <antcall target="installjunit-distro"/>
+      <antcall target="installjunit-previous"/>
+   </target>
+
+   <!-- Install JUnit from distribution package -->
+   <target name="installjunit-distro" if="junit.distro.present">
+      <copy file="${junit_home}/cpl-v10.html" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-junit.html"/>
+      <copy file="${junit_home}/junit.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install JUnit from previously installed package -->
+   <target name="installjunit-previous" unless="junit.distro.present">
+      <copy file="${external_projects_home}/runtime/license-junit.html" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/junit.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- JUnitEE                                                              -->
+   <!-- Runtime - may be required to run tests inside of application server  --> 
+   <!-- ==================================================================== -->
+   <target name="installjunitee" unless="skip.thirdparty.packages"
+           depends="installjunit"
+           description="Install JUnitEE libraries">
+      <available file="${junitee_home}" type="dir" property="junitee.distro.present"/>
+      <antcall target="installjunitee-distro"/>
+      <antcall target="installjunitee-previous"/>
+   </target>
+
+   <!-- Install JUnitEE from distribution package -->
+   <target name="installjunitee-distro" if="junitee.distro.present">
+      <!-- License is missing, it is public domain -->
+      <copy file="${junitee_home}/lib/junitee.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install JUnit from previously installed package -->
+   <target name="installjunitee-previous" unless="junitee.distro.present">
+      <copy file="${external_projects_home}/runtime/junitee.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Jakarta Commons Discovery                                            -->
+   <!-- ==================================================================== -->
+   <target name="installdiscovery" unless="skip.thirdparty.packages"
+           description="Install Jakarta Commons Discovery libraries, license 
+                        and other required files">
+      <available file="${discovery_home}" type="dir" property="discovery.distro.present"/>
+      <antcall target="installdiscovery-distro"/>
+      <antcall target="installdiscovery-previous"/>
+   </target>
+
+   <!-- Install Commons Discovery from distribution package -->
+   <target name="installdiscovery-distro" if="discovery.distro.present">
+      <copy file="${discovery_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-commons-discovery.txt"/>
+      <copy file="${discovery_home}/commons-discovery.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install Commons Discovery from previously installed package -->
+   <target name="installdiscovery-previous" unless="discovery.distro.present">
+      <copy file="${external_projects_home}/runtime/license-commons-discovery.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/commons-discovery.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Jakarta Commons File Upload                                          -->
+   <!-- ==================================================================== -->
+   <target name="installfileupload" unless="skip.thirdparty.packages"
+           description="Install Jakarta Commons File Upload, license and other 
+                        required files">
+      <available file="${fileupload_home}" type="dir" property="fileupload.distro.present"/>
+      <antcall target="installfileupload-distro"/>
+      <antcall target="installfileupload-previous"/>
+   </target>
+   
+   <!-- Install Commons File Upload from distribution package -->
+   <target name="installfileupload-distro" if="fileupload.distro.present">
+      <copy file="${fileupload_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-commons-fileupload.txt"/>
+      <copy file="${fileupload_home}/commons-fileupload.jar" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+   
+   <!-- Install Commons File Upload from previously installed package -->
+   <target name="installfileupload-previous" unless="fileupload.distro.present">
+      <copy file="${external_projects_home}/runtime/license-commons-fileupload.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/commons-fileupload.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Jakarta Commons Pool                                                 -->
+   <!-- ==================================================================== -->
+   <target name="installpool" unless="skip.thirdparty.packages"
+           description="Install Jakarta Commons Pool libraries, license 
+                        and other required files">
+      <available file="${pool_home}" type="dir" property="pool.distro.present"/>
+      <antcall target="installpool-distro"/>
+      <antcall target="installpool-previous"/>
+   </target>
+
+   <!-- Install Commons Pool from distribution package -->
+   <target name="installpool-distro" if="pool.distro.present">
+      <copy file="${pool_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-commons-pool.txt"/>
+      <copy file="${pool_home}/commons-pool.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install Commons Pool from previously installed package -->
+   <target name="installpool-previous" unless="pool.distro.present">
+      <copy file="${external_projects_home}/runtime/license-commons-pool.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/commons-pool.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Jakarta Commons DBCP                                                 -->
+   <!-- ==================================================================== -->
+   <target name="installdbcp" unless="skip.thirdparty.packages"
+           depends="installpool"
+           description="Install Jakarta Commons DBCP Pool libraries, license 
+                        and other required files">
+      <available file="${dbcp_home}" type="dir" property="dbcp.distro.present"/>
+      <antcall target="installdbcp-distro"/>
+      <antcall target="installdbcp-previous"/>
+   </target>
+
+   <!-- Install Commons DBCP from distribution package -->
+   <target name="installdbcp-distro" if="dbcp.distro.present">
+      <copy file="${dbcp_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-commons-dbcp.txt"/>
+      <copy file="${dbcp_home}/commons-dbcp.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install Commons DBCP from previously installed package -->
+   <target name="installdbcp-previous" unless="dbcp.distro.present">
+      <copy file="${external_projects_home}/runtime/license-commons-dbcp.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/commons-dbcp.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Jakarta Commons EL                                                   -->
+   <!-- ==================================================================== -->
+   <target name="installel" unless="skip.thirdparty.packages"
+           description="Install Jakarta Commons Evaluation Language libraries, license 
+                        and other required files">
+      <available file="${el_home}" type="dir" property="el.distro.present"/>
+      <antcall target="installel-distro"/>
+      <antcall target="installel-previous"/>
+   </target>
+
+   <!-- Install Commons EL from distribution package -->
+   <target name="installel-distro" if="el.distro.present">
+      <copy file="${el_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-commons-el.txt"/>
+      <copy file="${el_home}/commons-el.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install Commons EL from previously installed package -->
+   <target name="installel-previous" unless="el.distro.present">
+      <copy file="${external_projects_home}/runtime/license-commons-el.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/commons-el.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Jakarta Commons Collections                                          -->
+   <!-- ==================================================================== -->
+   <target name="installcollections" unless="skip.thirdparty.packages"
+           description="Install Jakarta Commons Collections libraries, license 
+                        and other required files">
+      <available file="${collections_home}" type="dir" property="collections.distro.present"/>
+      <antcall target="installcollections-distro"/>
+      <antcall target="installcollections-previous"/>
+   </target>
+
+   <!-- Install Commons Collections from distribution package -->
+   <target name="installcollections-distro" if="collections.distro.present">
+      <copy file="${collections_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-commons-collections.txt"/>
+      <copy file="${collections_home}/commons-collections.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install Commons Collections from previously installed package -->
+   <target name="installcollections-previous" unless="collections.distro.present">
+      <copy file="${external_projects_home}/runtime/license-commons-collections.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/commons-collections.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Jakarta Commons JavaBean Utilities                                   -->
+   <!-- ==================================================================== -->
+   <target name="installbeanutils" unless="skip.thirdparty.packages"
+           description="Install Jakarta Commons Bean Utilities libraries, license 
+                        and other required files">
+      <available file="${beanutils_home}" type="dir" property="beanutils.distro.present"/>
+      <antcall target="installbeanutils-distro"/>
+      <antcall target="installbeanutils-previous"/>
+   </target>
+
+   <!-- Install Commons JavaBean Utilities from distribution package -->
+   <target name="installbeanutils-distro" if="beanutils.distro.present">
+      <copy file="${beanutils_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-commons-beanutils.txt"/>
+      <copy file="${beanutils_home}/commons-beanutils.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install Commons JavaBean Utilities from previously installed package -->
+   <target name="installbeanutils-previous" unless="beanutils.distro.present">
+      <copy file="${external_projects_home}/runtime/license-commons-beanutils.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/commons-beanutils.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Jakarta Commons Logging                                              -->
+   <!-- ==================================================================== -->
+   <target name="installlogging" unless="skip.thirdparty.packages"
+           description="Install Jakarta Commons Logging libraries, license 
+                        and other required files">
+      <available file="${logging_home}" type="dir" property="logging.distro.present"/>
+      <antcall target="installlogging-distro"/>
+      <antcall target="installlogging-previous"/>
+   </target>
+
+   <!-- Install Commons Logging from distribution package -->
+   <target name="installlogging-distro" if="logging.distro.present">
+      <copy file="${logging_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-commons-logging.txt"/>
+      <copy file="${logging_home}/commons-logging.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install Commons Logging from previously installed package -->
+   <target name="installlogging-previous" unless="logging.distro.present">
+      <copy file="${external_projects_home}/runtime/license-commons-logging.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/commons-logging.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Jakarta Commons CLI                                                  -->
+   <!-- ==================================================================== -->
+   <target name="installcli" unless="skip.thirdparty.packages"
+           description="Install Jakarta Commons CLI library, license and other 
+                        required files">
+      <available file="${cli_home}" type="dir" property="cli.distro.present"/>
+      <antcall target="installcli-distro"/>
+      <antcall target="installcli-previous"/>
+   </target>
+
+   <!-- Install Commons CLI from distribution package -->
+   <target name="installcli-distro" if="cli.distro.present">
+      <copy file="${cli_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-commons-cli.txt"/>
+      <copy file="${cli_home}/commons-cli.jar" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install Commons CLI from previously installed package -->
+   <target name="installcli-previous" unless="cli.distro.present">
+      <copy file="${external_projects_home}/runtime/license-commons-cli.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/commons-cli.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Jakarta Commons Digester                                             -->
+   <!-- ==================================================================== -->
+   <target name="installdigester" unless="skip.thirdparty.packages"
+           description="Install Jakarta Commons Digester library, license and other 
+                        required files">
+      <available file="${digester_home}" type="dir" property="digester.distro.present"/>
+      <antcall target="installdigester-distro"/>
+      <antcall target="installdigester-previous"/>
+   </target>
+
+   <!-- Install Commons Digester from distribution package -->
+   <target name="installdigester-distro" if="digester.distro.present">
+      <copy file="${digester_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-commons-digester.txt"/>
+      <copy file="${digester_home}/commons-digester.jar" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install Commons Digester from previously installed package -->
+   <target name="installdigester-previous" unless="digester.distro.present">
+      <copy file="${external_projects_home}/runtime/license-commons-digester.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/commons-digester.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Jakarta Commons Validator                                            -->
+   <!-- ==================================================================== -->
+   <target name="installvalidator" unless="skip.thirdparty.packages"
+           description="Install Jakarta Commons Validator, license and other 
+                        required files">
+      <available file="${validator_home}" type="dir" property="validator.distro.present"/>
+      <antcall target="installvalidator-distro"/>
+      <antcall target="installvalidator-previous"/>
+   </target>
+
+   <!-- Install Commons Validator from distribution package -->
+   <target name="installvalidator-distro" if="validator.distro.present">
+      <copy file="${validator_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-commons-validator.txt"/>
+      <copy file="${validator_home}/commons-validator.jar" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install Commons Validator from previously installed package -->
+   <target name="installvalidator-previous" unless="validator.distro.present">
+      <copy file="${external_projects_home}/runtime/license-commons-validator.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/commons-validator.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Jakarta ORO -->
+   <!-- ==================================================================== -->
+   <target name="installoro" unless="skip.thirdparty.packages"
+           description="Install Jakarta ORO, license and other 
+                        required files">
+      <available file="${oro_home}" type="dir" property="oro.distro.present"/>
+      <antcall target="installoro-distro"/>
+      <antcall target="installoro-previous"/>
+   </target>
+
+   <!-- Install ORO from distribution package -->
+   <target name="installoro-distro" if="oro.distro.present">
+      <copy file="${oro_home}/LICENSE" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-jakarta-oro.txt"/>
+      <copy file="${oro_home}/jakarta-oro.jar" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install ORO from previously installed package -->
+   <target name="installoro-previous" unless="oro.distro.present">
+      <copy file="${external_projects_home}/runtime/license-jakarta-oro.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/jakarta-oro.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Xerces XML Parser                                                    -->
+   <!-- ==================================================================== -->
+   <target name="installxerces" unless="skip.thirdparty.packages"
+           description="Install Xerces libraries, license 
+                        and other required files">
+      <available file="${xerces_home}" type="dir" property="xerces.distro.present"/>
+      <antcall target="installxerces-distro"/>
+      <antcall target="installxerces-previous"/>
+   </target>
+
+   <!-- Install Xerces from distribution package -->
+   <target name="installxerces-distro" if="xerces.distro.present">
+      <copy file="${xerces_home}/LICENSE" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-xerces.txt"/>
+      <copy file="${xerces_home}/LICENSE.resolver.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-xerces-resolver.txt"/>
+      <copy file="${xerces_home}/LICENSE.DOM-documentation.html" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-xerces-dom-documentation.html"/>
+      <copy file="${xerces_home}/LICENSE.DOM-software.html" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-xerces-dom-software.html"/>
+      <copy file="${xerces_home}/LICENSE-SAX.html" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-xerces-sax.html"/>
+      <copy file="${xerces_home}/xercesImpl.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${xerces_home}/xml-apis.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install Xerces from previously installed package -->
+   <target name="installxerces-previous" unless="xerces.distro.present">
+      <copy file="${external_projects_home}/runtime/license-xerces.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/license-xerces-resolver.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/license-xerces-dom-documentation.html" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/license-xerces-dom-software.html" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/license-xerces-sax.html" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/xercesImpl.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/xml-apis.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- SWT OS Platform Optimized GUI Construction Toolkit                   -->
+   <!-- ==================================================================== -->
+   <target name="installswt" unless="skip.thirdparty.packages"
+           description="Install SWT libraries, license and other required files">
+      <available file="${swt_home}" type="dir" property="swt.distro.present"/>
+      <antcall target="installswt-distro"/>
+      <antcall target="installswt-previous"/>
+   </target>
+
+   <!-- Install SWT from distribution package -->
+   <target name="installswt-distro" if="swt.distro.present">
+      <copy file="${swt_home}/win32/about.html" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/win32/license-swt.html"/>
+      <copy file="${swt_home}/gtk-linux-x86/about.html" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86/license-swt.html"/>
+      <copy file="${swt_home}/gtk-linux-x86/about_files/lgpl-v21.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86/license-swt-lgpl-v21.txt"/>
+      <copy file="${swt_home}/gtk-linux-x86/about_files/mpl-v11.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86/license-swt-mpl-v11.txt"/>
+      <copy file="${swt_home}/gtk-linux-x86/about_files/pixman-licenses.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86/license-swt-pixman-licenses.txt"/>
+      <copy file="${swt_home}/win32/swt.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/win32"/>
+      <copy file="${swt_home}/win32/swt-awt-win32-3139.dll"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/win32"/>
+      <copy file="${swt_home}/win32/swt-gdip-win32-3139.dll"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/win32"/>
+      <copy file="${swt_home}/win32/swt-win32-3139.dll"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/win32"/>
+      <copy file="${swt_home}/gtk-linux-x86/swt.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${swt_home}/gtk-linux-x86/libcairo.so.1"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${swt_home}/gtk-linux-x86/libswt-atk-gtk-3139.so"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${swt_home}/gtk-linux-x86/libswt-awt-gtk-3139.so"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${swt_home}/gtk-linux-x86/libswt-cairo-gtk-3139.so"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${swt_home}/gtk-linux-x86/libswt-gnome-gtk-3139.so"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${swt_home}/gtk-linux-x86/libswt-gtk-3139.so"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${swt_home}/gtk-linux-x86/libswt-mozilla-gtk-3139.so"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${swt_home}/gtk-linux-x86/libswt-pi-gtk-3139.so"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+   </target>
+
+   <!-- Install SWT from previously installed package -->
+   <target name="installswt-previous" unless="swt.distro.present">
+      <copy file="${external_projects_home}/runtime/win32/license-swt.html" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime/win32"/>
+      <copy file="${external_projects_home}/runtime/gtk-linux-x86/license-swt.html" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${external_projects_home}/runtime/gtk-linux-x86/license-swt-lgpl-v21.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${external_projects_home}/runtime/gtk-linux-x86/license-swt-mpl-v11.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${external_projects_home}/runtime/gtk-linux-x86/license-swt-pixman-licenses.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${external_projects_home}/runtime/win32/swt.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/win32"/>
+      <copy file="${external_projects_home}/runtime/win32/swt-awt-win32-3139.dll"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/win32"/>
+      <copy file="${external_projects_home}/runtime/win32/swt-gdip-win32-3139.dll"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/win32"/>
+      <copy file="${external_projects_home}/runtime/win32/swt-win32-3139.dll"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/win32"/>
+      <copy file="${external_projects_home}/runtime/gtk-linux-x86/swt.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${external_projects_home}/runtime/gtk-linux-x86/libcairo.so.1"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${external_projects_home}/runtime/gtk-linux-x86/libswt-atk-gtk-3139.so"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${external_projects_home}/runtime/gtk-linux-x86/libswt-awt-gtk-3139.so"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${external_projects_home}/runtime/gtk-linux-x86/libswt-cairo-gtk-3139.so"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${external_projects_home}/runtime/gtk-linux-x86/libswt-gnome-gtk-3139.so"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${external_projects_home}/runtime/gtk-linux-x86/libswt-gnome-gtk-3139.so"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${external_projects_home}/runtime/gtk-linux-x86/libswt-gtk-3139.so"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${external_projects_home}/runtime/gtk-linux-x86/libswt-mozilla-gtk-3139.so"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+      <copy file="${external_projects_home}/runtime/gtk-linux-x86/libswt-pi-gtk-3139.so"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/gtk-linux-x86"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Enterprise JavaBeans API specification                               -->
+   <!-- Use the Geronimo version since it is released under friendlier       -->
+   <!-- lincese than the one provided by Sun                                 -->
+   <!-- ==================================================================== -->
+   <target name="installejb" unless="skip.thirdparty.packages"
+           description="Install EJB libraries, license and other required files">
+      <available file="${geronimo_home}" type="dir" property="ejb.distro.present"/>
+      <antcall target="installejb-distro"/>
+      <antcall target="installejb-previous"/>
+   </target>
+
+   <!-- Install EJB from distribution package -->
+   <target name="installejb-distro" if="ejb.distro.present">
+      <copy file="${geronimo_home}/src/geronimo-spec-ejb/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-ejb-api.txt"/>    
+      <!-- Use the same jar name as the Sun's distribution since some packages
+           may count on it -->  
+      <copy file="${geronimo_home}/geronimo-ejb_2.1_spec.jar"
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/ejb-api.jar"/>
+   </target>
+
+   <!-- Install EJB from previously installed package -->
+   <target name="installejb-previous" unless="ejb.distro.present">
+      <copy file="${external_projects_home}/runtime/license-ejb-api.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/ejb-api.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Java Transaction API specification                                   -->
+   <!-- Use the Geronimo version since it is released under friendlier       -->
+   <!-- lincese than the one provided by Sun                                 -->
+   <!-- ==================================================================== -->
+   <target name="installjta" unless="skip.thirdparty.packages"
+           description="Install JTA libraries, license and other required files">
+      <available file="${geronimo_home}" type="dir" property="jta.distro.present"/>
+      <antcall target="installjta-distro"/>
+      <antcall target="installjta-previous"/>
+   </target>
+
+   <!-- Install JTA from distribution package -->
+   <target name="installjta-distro" if="jta.distro.present">
+      <copy file="${geronimo_home}/src/geronimo-spec-jta/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-jta.txt"/>    
+      <!-- Use the same jar name as the Sun's distribution since some packages
+           may count on it -->  
+      <copy file="${geronimo_home}/geronimo-jta_1.0.1B_spec.jar"
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/jta.jar"/>
+   </target>
+
+   <!-- Install JTS from previously installed package -->
+   <target name="installjta-previous" unless="jta.distro.present">
+      <copy file="${external_projects_home}/runtime/license-jta.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/jta.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Java Transaction Service specification                               -->
+   <!-- ==================================================================== -->
+   <target name="installjts" unless="skip.thirdparty.packages"
+           description="Install JTS libraries, license and other required files">
+      <available file="${jts_home}" type="dir" property="jts.distro.present"/>
+      <antcall target="installjts-distro"/>
+      <antcall target="installjts-previous"/>
+   </target>
+
+   <!-- Install JTS from distribution package -->
+   <target name="installjts-distro" if="jts.distro.present">
+      <copy file="${jts_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-jts.txt"/>    
+      <jar jarfile="${generated_home}/${projectname}/${external_home}/runtime/jts.jar" 
+           compress="true" update="false" duplicate="fail" index="true">
+         <fileset dir="${jts_home}/classes"/>
+      </jar>
+   </target>
+
+   <!-- Install JTS from previously installed package -->
+   <target name="installjts-previous" unless="jts.distro.present">
+      <copy file="${external_projects_home}/runtime/license-jts.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/jts.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- J2EE Connector Architecture specification                            -->
+   <!-- Use the Geronimo version since it is released under friendlier       -->
+   <!-- lincese than the one provided by Sun                                 -->
+   <!-- ==================================================================== -->
+   <target name="installconnector" unless="skip.thirdparty.packages"
+           description="Install connector libraries, license and other required files">
+      <available file="${geronimo_home}" type="dir" property="connector.distro.present"/>
+      <antcall target="installconnector-distro"/>
+      <antcall target="installconnector-previous"/>
+   </target>
+
+   <!-- Install Connector from distribution package -->
+   <target name="installconnector-distro" if="connector.distro.present">
+      <copy file="${geronimo_home}/src/geronimo-spec-j2ee-connector/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-connector-api.txt"/>    
+      <!-- Use the same jar name as the Sun's distribution since some packages
+           may count on it -->  
+      <copy file="${geronimo_home}/geronimo-j2ee-connector_1.5_spec.jar"
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/connector-api.jar"/>
+   </target>
+
+   <!-- Install Connector from previously installed package -->
+   <target name="installconnector-previous" unless="connector.distro.present">
+      <copy file="${external_projects_home}/runtime/license-connector-api.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/connector-api.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- J2EE Servlet specification                                           -->
+   <!-- Use the Geronimo version since it is released under friendlier       -->
+   <!-- lincese than the one provided by Sun                                 -->
+   <!-- ==================================================================== -->
+   <target name="installservlet" unless="skip.thirdparty.packages"
+           description="Install servlet libraries, license and other required files">
+      <available file="${geronimo_home}" type="dir" property="servlet.distro.present"/>
+      <antcall target="installservlet-distro"/>
+      <antcall target="installservlet-previous"/>
+   </target>
+
+   <!-- Install Servlet from distribution package -->
+   <target name="installservlet-distro" if="servlet.distro.present">
+      <copy file="${geronimo_home}/src/geronimo-spec-servlet/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-javax.servlet.txt"/>    
+      <!-- Use the same jar name as the Sun's distribution since some packages
+           may count on it -->  
+      <copy file="${geronimo_home}/geronimo-servlet_2.4_spec.jar"
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/javax.servlet.jar"/>
+   </target>
+
+   <!-- Install Servlet from previously installed package -->
+   <target name="installservlet-previous" unless="servlet.distro.present">
+      <copy file="${external_projects_home}/runtime/license-javax.servlet.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/javax.servlet.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+ 
+   <!-- ==================================================================== -->
+   <!-- J2EE JSP specification                                           -->
+   <!-- Use the Geronimo version since it is released under friendlier       -->
+   <!-- lincese than the one provided by Sun                                 -->
+   <!-- ==================================================================== -->
+   <target name="installjsp" unless="skip.thirdparty.packages"
+           description="Install JSP libraries, license and other required files">
+      <available file="${geronimo_home}" type="dir" property="jsp.distro.present"/>
+      <antcall target="installjsp-distro"/>
+      <antcall target="installjsp-previous"/>
+   </target>
+
+   <!-- Install JSP from distribution package -->
+   <target name="installjsp-distro" if="jsp.distro.present">
+      <copy file="${geronimo_home}/src/geronimo-spec-servlet/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-jsp-api.txt"/>    
+      <!-- Use the same jar name as the Sun's distribution since some packages
+           may count on it -->  
+      <copy file="${geronimo_home}/geronimo-jsp_2.0_spec.jar"
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/jsp-api.jar"/>
+   </target>
+
+   <!-- Install JSP from previously installed package -->
+   <target name="installjsp-previous" unless="jsp.distro.present">
+      <copy file="${external_projects_home}/runtime/license-jsp-api.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/jsp-api.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+ 
+   <!-- ==================================================================== -->
+   <!-- XAPool is XA compatible connection pool                              -->
+   <!-- ==================================================================== -->
+   <target name="installxapool" unless="skip.thirdparty.packages"
+           depends="installlogging"
+           description="Install XAPool libraries, license and other required files">
+      <available file="${xapool_home}" type="dir" property="xapool.distro.present"/>
+      <antcall target="installxapool-distro"/>
+      <antcall target="installxapool-previous"/>
+   </target>
+
+   <!-- Install XAPool from distribution package -->
+   <target name="installxapool-distro" if="xapool.distro.present">
+      <copy file="${xapool_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-xapool.txt"/>    
+      <copy file="${xapool_home}/lib/xapool.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install XAPool from previously installed package -->
+   <target name="installxapool-previous" unless="xapool.distro.present">
+      <copy file="${external_projects_home}/runtime/license-xapool.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/xapool.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Carol is universal RPC library                                       -->
+   <!-- ==================================================================== -->
+   <target name="installcarol" unless="skip.thirdparty.packages"
+           description="Install Carol libraries, license and other required files">
+      <available file="${carol_home}" type="dir" property="carol.distro.present"/>
+      <antcall target="installcarol-distro"/>
+      <antcall target="installcarol-previous"/>
+   </target>
+
+   <!-- Install Carol from distribution package -->
+   <target name="installcarol-distro" if="carol.distro.present">
+      <copy file="${carol_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-carol.txt"/>    
+      <copy file="${carol_home}/lib/ow_carol.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install Carol from previously installed package -->
+   <target name="installcarol-previous" unless="carol.distro.present">
+      <copy file="${external_projects_home}/runtime/license-carol.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/ow_carol.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- HOWL high-performance temporary data logger                          -->
+   <!-- ==================================================================== -->
+   <target name="installhowl" unless="skip.thirdparty.packages"
+           description="Install HOWL libraries, license and other required files">
+      <available file="${howl_home}" type="dir" property="howl.distro.present"/>
+      <antcall target="installhowl-distro"/>
+      <antcall target="installhowl-previous"/>
+   </target>
+
+   <!-- Install HOWL from distribution package -->
+   <target name="installhowl-distro" if="howl.distro.present">
+      <copy file="${howl_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-howl.txt"/>    
+      <copy file="${howl_home}/howl.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install HOWL from previously installed package -->
+   <target name="installhowl-previous" unless="howl.distro.present">
+      <copy file="${external_projects_home}/runtime/license-howl.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/howl.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- JOTM Java Transaction API implementation                             -->
+   <!-- ==================================================================== -->
+   <target name="installjotm" unless="skip.thirdparty.packages"
+           depends="installcarol,installcli,installjta,installjts,installconnector"
+           description="Install JOTM libraries, license and other required files">
+       <available file="${jotm_home}" type="dir" property="jotm.distro.present"/>
+       <antcall target="installjotm-distro"/>
+       <antcall target="installjotm-previous"/>
+   </target>
+
+   <!-- Install JOTM from distribution package -->
+   <target name="installjotm-distro" if="jotm.distro.present">
+      <copy file="${jotm_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-jotm.txt"/>    
+      <copy file="${jotm_home}/lib/jotm.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${jotm_home}/lib/jotm_jrmp_stubs.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install JOTM from previously installed package -->
+   <target name="installjotm-previous" unless="jotm.distro.present">
+      <copy file="${external_projects_home}/runtime/license-jotm.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/jotm.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/jotm_jrmp_stubs.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- C3P0 connection pool                                                 -->
+   <!-- ==================================================================== -->
+   <target name="installc3p0" unless="skip.thirdparty.packages"
+           description="Install C3P0 libraries, license and other required files">
+      <available file="${c3p0_home}" type="dir" property="c3p0.distro.present"/>
+      <antcall target="installc3p0-distro"/>
+      <antcall target="installc3p0-previous"/>
+   </target>
+
+   <!-- Install C3P0 from distribution package -->
+   <target name="installc3p0-distro" if="c3p0.distro.present">
+      <copy file="${c3p0_home}/LICENSE" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-c3p0.txt"/>    
+      <copy file="${c3p0_home}/lib/c3p0.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install C3P0 from previously installed package -->
+   <target name="installc3p0-previous" unless="c3p0.distro.present">
+      <copy file="${external_projects_home}/runtime/license-c3p0.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/c3p0.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Proxool connection pool                                              -->
+   <!-- ==================================================================== -->
+   <target name="installproxool" unless="skip.thirdparty.packages"
+           description="Install Proxool libraries, license and other required files">
+      <available file="${proxool_home}" type="dir" property="proxool.distro.present"/>
+      <antcall target="installproxool-distro"/>
+      <antcall target="installproxool-previous"/>
+   </target>
+
+   <!-- Install Proxool from distribution package -->
+   <target name="installproxool-distro" if="proxool.distro.present">
+      <copy file="${proxool_home}/LICENCE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-proxool.txt"/>    
+      <copy file="${proxool_home}/lib/proxool.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install Proxool from previously installed package -->
+   <target name="installproxool-previous" unless="proxool.distro.present">
+      <copy file="${external_projects_home}/runtime/license-proxool.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/proxool.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Bounty Castle cryptographic library -->
+   <!-- ==================================================================== -->
+   <target name="installcrypto" unless="skip.thirdparty.packages"
+           description="Install Crypto libraries, license and other required files">
+      <available file="${crypto_home}" type="dir" property="crypto.distro.present"/>
+      <antcall target="installcrypto-distro"/>
+      <antcall target="installcrypto-previous"/>
+   </target>
+
+   <!-- Install Crypto from distribution package -->
+   <target name="installcrypto-distro" if="crypto.distro.present">
+      <copy file="${crypto_home}/LICENSE.html" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-crypto.html"/>    
+      <copy file="${crypto_home}/jars/bcprov-jdk14.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install Crypto from previously installed package -->
+   <target name="installcrypto-previous" unless="crypto.distro.present">
+      <copy file="${external_projects_home}/runtime/license-crypto.html" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/bcprov-jdk14.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Struts web application framework                                     -->
+   <!-- ==================================================================== -->
+   <target name="installstruts" unless="skip.thirdparty.packages"
+           depends="installbeanutils,installdigester,installvalidator,installoro,installfileupload"
+           description="Install Struts libraries, license and other required files">
+      <available file="${struts_home}" type="dir" property="struts.distro.present"/>
+      <antcall target="installstruts-distro"/>
+      <antcall target="installstruts-previous"/>
+   </target>
+
+   <!-- Install Struts from distribution package -->
+   <target name="installstruts-distro" if="struts.distro.present">
+      <copy file="${struts_home}/LICENSE" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-struts.txt"/>
+      <copy file="${struts_home}/lib/struts.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${struts_home}/lib/struts-tiles.tld"
+            todir="${generated_home}/${projectname}/${external_home}/webui/WEB-INF/"/>
+      <copy file="${struts_home}/lib/struts-logic.tld"
+            todir="${generated_home}/${projectname}/${external_home}/webui/WEB-INF/"/>
+      <copy file="${struts_home}/lib/struts-bean.tld"
+            todir="${generated_home}/${projectname}/${external_home}/webui/WEB-INF/"/>
+   </target>
+
+   <!-- Install Struts from previously installed package -->
+   <target name="installstruts-previous" unless="struts.distro.present">
+      <copy file="${external_projects_home}/runtime/license-struts.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/struts.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/webui/WEB-INF/struts-tiles.tld"
+            todir="${generated_home}/${projectname}/${external_home}/webui/WEB-INF/"/>
+      <copy file="${external_projects_home}/webui/WEB-INF/struts-logic.tld"
+            todir="${generated_home}/${projectname}/${external_home}/webui/WEB-INF/"/>
+      <copy file="${external_projects_home}/webui/WEB-INF/struts-bean.tld"
+            todir="${generated_home}/${projectname}/${external_home}/webui/WEB-INF/"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- SAP DB JDBC driver                                                   -->
+   <!-- ==================================================================== -->
+   <target name="installsapdb" unless="skip.thirdparty.packages"
+           description="Install SAP DB libraries, license and other required files">
+      <available file="${sapdb_home}" type="dir" property="sapdb.distro.present"/>
+      <antcall target="installsapdb-distro"/>
+      <antcall target="installsapdb-previous"/>
+   </target>
+ 
+   <!-- Install SAP DB from distribution package -->
+   <target name="installsapdb-distro" if="sapdb.distro.present">
+      <copy file="${sapdb_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-sapdb.txt"/>
+      <copy file="${sapdb_home}/sapdbc.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+ 
+   <!-- Install SAP DB from previously installed package -->
+   <target name="installsapdb-previous" unless="sapdb.distro.present">
+      <copy file="${external_projects_home}/runtime/license-sapdb.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/sapdbc.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- MaxDB JDBC driver                                                    -->
+   <!-- ==================================================================== -->
+   <target name="installmaxdb" unless="skip.thirdparty.packages"
+           description="Install MaxDB libraries, license and other required files">
+      <available file="${maxdb_home}" type="dir" property="maxdb.distro.present"/>
+      <antcall target="installmaxdb-distro"/>
+      <antcall target="installmaxdb-previous"/>
+   </target>  
+
+   <!-- Install MaxDB from distribution package -->
+   <target name="installmaxdb-distro" if="maxdb.distro.present">
+      <copy file="${maxdb_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-maxdb.txt"/>
+      <copy file="${maxdb_home}/sapdbc.jar"
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/maxdbc.jar"/>
+   </target>  
+
+   <!-- Install MaxDB from previously installed package -->
+   <target name="installmaxdb-previous" unless="maxdb.distro.present">
+      <copy file="${external_projects_home}/runtime/license-maxdb.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/maxdbc.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- HsqlDB pure Java database with JDBC driver -->
+   <!-- ==================================================================== -->
+   <target name="installhsqldb" unless="skip.thirdparty.packages"
+           description="Install HsqlDB libraries, license and other required files">
+      <available file="${hsqldb_home}" type="dir" property="hsqldb.distro.present"/>
+      <antcall target="installhsqldb-distro"/>
+      <antcall target="installhsqldb-previous"/>
+   </target>
+
+   <!-- Install HsqlDB from distribution package -->
+   <target name="installhsqldb-distro" if="hsqldb.distro.present">
+      <copy file="${hsqldb_home}/doc/hsqldb_lic.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-hsqldb.txt"/>
+      <copy file="${hsqldb_home}/lib/hsqldb.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install HsqlDB from previously installed package -->
+   <target name="installhsqldb-previous" unless="hsqldb.distro.present">
+      <copy file="${external_projects_home}/runtime/license-hsqldb.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/hsqldb.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- P6Spy is wrapper around JDBC driver allowing to monitor the SQL      -->
+   <!-- ==================================================================== -->
+   <target name="installp6spy" unless="skip.thirdparty.packages"
+           description="Install P6Spy libraries, license and other required files">
+      <available file="${p6spy_home}" type="dir" property="p6spy.distro.present"/>
+      <antcall target="installp6spy-distro"/>
+      <antcall target="installp6spy-previous"/>
+   </target>
+
+   <!-- Install P6Spy from distribution package -->
+   <target name="installp6spy-distro" if="p6spy.distro.present">
+      <copy file="${p6spy_home}/license.htm" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-p6spy.html"/>
+      <copy file="${p6spy_home}/p6spy.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install P6Spy from previously installed package -->
+   <target name="installp6spy-previous" unless="p6spy.distro.present">
+      <copy file="${external_projects_home}/runtime/license-p6spy.html" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/p6spy.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Ant Java Build tool                                                  -->
+   <!-- Runtime - required by Jetty to work with JSP pages                   --> 
+   <!-- ==================================================================== -->
+   <target name="installant" unless="skip.thirdparty.packages"
+           description="Install Ant libraries, license and other required files">
+      <available file="${ant_home}" type="dir" property="ant.distro.present"/>
+      <antcall target="installant-distro"/>
+      <antcall target="installant-previous"/>
+   </target>
+
+   <!-- Install Ant from distribution package -->
+   <target name="installant-distro" if="ant.distro.present">
+      <copy file="${ant_home}/LICENSE" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-ant.txt"/>
+      <copy file="${ant_home}/lib/ant.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- Install Ant from previously installed package -->
+   <target name="installant-previous" unless="ant.distro.present">
+      <copy file="${external_projects_home}/runtime/license-ant.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/ant.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Jetty pure Java HTTP server and servlet/JSP engine                   -->
+   <!-- Runtime - required by thick client application framework             --> 
+   <!-- Instead of installing javax.servlet.jar from Jetty install it from   -->
+   <!-- Geronimo since it has friendlier licensing than the one by Sun       -->
+   <!-- ==================================================================== -->
+   <target name="installjetty" unless="skip.thirdparty.packages"
+           depends="installant,installxerces,installel,installservlet,installjsp"
+           description="Install Jetty libraries, license and other required files">
+      <available file="${jetty_home}" type="dir" property="jetty.distro.present"/>
+      <antcall target="installjetty-distro"/>
+      <antcall target="installjetty-previous"/>
+   </target>
+   
+   <!-- Install Jetty from distribution package -->
+   <target name="installjetty-distro" if="jetty.distro.present">
+      <copy file="${jetty_home}/LICENSE.TXT" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-jetty.txt"/>    
+      <copy file="${jetty_home}/lib/org.mortbay.jetty.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${jetty_home}/ext/jasper-compiler.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${jetty_home}/ext/jasper-runtime.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+   
+   <!-- Install Jetty from previously installed package -->
+   <target name="installjetty-previous" unless="jetty.distro.present">
+      <copy file="${external_projects_home}/runtime/license-jetty.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/org.mortbay.jetty.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/jasper-compiler.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/runtime/jasper-runtime.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- XDoclet is code generation engine -->   
+   <!-- ==================================================================== -->
+   <target name="installxdoclet" unless="skip.thirdparty.packages"
+           depends="installcollections,installlogging"
+           description="Install XDoclet libraries, license and other required files">      
+      <available file="${xdoclet_home}" type="dir" property="xdoclet.distro.present"/>
+      <antcall target="installxdoclet-distro"/>
+      <antcall target="installxdoclet-previous"/>
+   </target>
+   
+   <!-- Install XDoclet from distribution package -->
+   <target name="installxdoclet-distro" if="xdoclet.distro.present">
+      <copy file="${xdoclet_home}/docs/licenses/xdoclet-license.html"
+            tofile="${generated_home}/${projectname}/${external_home}/build/license-xdoclet.html"/>
+      <copy todir="${generated_home}/${projectname}/${external_home}/build">
+         <fileset dir="${xdoclet_home}/lib">
+            <include name="xdoclet*.jar"/>
+            <include name="xjavadoc-1.1.jar"/>
+         </fileset>
+      </copy>
+   </target>
+   
+   <!-- Install XDoclet from previously installed package -->
+   <target name="installxdoclet-previous" unless="xdoclet.distro.present">
+      <copy file="${external_projects_home}/build/license-xdoclet.html" 
+            todir="${generated_home}/${projectname}/${external_home}/build"/>
+      <copy todir="${generated_home}/${projectname}/${external_home}/build">
+         <fileset dir="${external_projects_home}/build">
+            <include name="xdoclet*.jar"/>
+            <include name="xjavadoc-1.1.jar"/>
+         </fileset>
+      </copy>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Checkstyle is code style checking engine                             -->   
+   <!-- ==================================================================== -->
+   <target name="installcheckstyle" unless="skip.thirdparty.packages"
+           description="Install Checkstyle libraries, license and other required files">      
+      <available file="${checkstyle_home}" type="dir" property="checkstyle.distro.present"/>
+      <antcall target="installcheckstyle-distro"/>
+      <antcall target="installcheckstyle-previous"/>
+   </target>
+
+   <!-- Install Checkstyle from distribution package -->
+   <target name="installcheckstyle-distro" if="checkstyle.distro.present">     
+      <copy file="${checkstyle_home}/LICENSE"
+            tofile="${generated_home}/${projectname}/${external_home}/build/license-checkstyle.txt"/>
+      <copy file="${checkstyle_home}/checkstyle-optional.jar"
+            todir="${generated_home}/${projectname}/${external_home}/build"/>
+      <copy file="${checkstyle_home}/checkstyle-all.jar"
+            todir="${generated_home}/${projectname}/${external_home}/build"/>
+   </target>
+
+   <!-- Install Checkstyle from previously installed package -->
+   <target name="installcheckstyle-previous" unless="checkstyle.distro.present">
+      <copy file="${external_projects_home}/build/license-checkstyle.txt" 
+            todir="${generated_home}/${projectname}/${external_home}/build"/>
+      <copy file="${external_projects_home}/build/checkstyle-optional.jar"
+            todir="${generated_home}/${projectname}/${external_home}/build"/>
+      <copy file="${external_projects_home}/build/checkstyle-all.jar"
+            todir="${generated_home}/${projectname}/${external_home}/build"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- Taglibrarydoc is taglib documentation generation engine              -->
+   <!-- ==================================================================== -->
+   <target name="installtaglibdoc" unless="skip.thirdparty.packages"
+           description="Install Taglibrarydoc libraries, license and other required files">      
+      <available file="${taglibdoc_home}" type="dir" property="taglibdoc.distro.present"/>
+      <antcall target="installtaglibdoc-distro"/>
+      <antcall target="installtaglibdoc-previous"/>
+   </target>
+
+   <!-- Install Taglibrarydoc from distribution package -->
+   <target name="installtaglibdoc-distro" if="taglibdoc.distro.present">     
+      <!-- License is missing -->
+      <copy file="${taglibdoc_home}/tlddoc.jar"
+            todir="${generated_home}/${projectname}/${external_home}/build"/>
+   </target>
+
+   <!-- Install Taglibrarydoc from previously installed package -->
+   <target name="installtaglibdoc-previous" unless="taglibdoc.distro.present">
+      <!-- License is missing -->
+      <copy file="${external_projects_home}/build/tlddoc.jar"
+            todir="${generated_home}/${projectname}/${external_home}/build"/>
+   </target>
+
+   <!-- ==================================================================== -->
+   <!-- JSCalendar is advanced JavaScript calendar implementation            -->
+   <!-- ==================================================================== -->
+   <target name="installjscalendar" unless="skip.thirdparty.packages"
+           description="Install JSCalendar libraries, license and other required files">
+      <available file="${jscalendar_home}" type="dir" property="jscalendar.distro.present"/>
+      <antcall target="installjscalendar-distro"/>
+      <antcall target="installjscalendar-previous"/>
+   </target>
+
+   <!-- Install JSCalendar from distribution package -->
+   <target name="installjscalendar-distro" if="jscalendar.distro.present">     
+      <!--
+      <copy file="${jscalendar_home}/README" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-jscalendar.html"/>
+      <copy file="${jscalendar_home}/calendar_stripped.js"
+            todir="${generated_home}/${projectname}/${external_home}/webui/js"/>
+      <copy file="${jscalendar_home}/calendar-setup_stripped.js"
+            todir="${generated_home}/${projectname}/${external_home}/webui/js"/>
+      <copy file="${jscalendar_home}/lang/calendar-en.js"
+            todir="${generated_home}/${projectname}/${external_home}/webui/js"/>
+      <copy file="${jscalendar_home}/calendar-system.css"
+            todir="${generated_home}/${projectname}/${external_home}/webui/css"/>
+      <copy file="${jscalendar_home}/calendar-win2k-1.css"
+            todir="${generated_home}/${projectname}/${external_home}/webui/css"/>
+      <copy file="${jscalendar_home}/calendar-win2k-2.css"
+            todir="${generated_home}/${projectname}/${external_home}/webui/css"/>
+      <copy file="${jscalendar_home}/calendar-win2k-cold-1.css"
+            todir="${generated_home}/${projectname}/${external_home}/webui/css"/>
+      <copy file="${jscalendar_home}/calendar-win2k-cold-2.css"
+            todir="${generated_home}/${projectname}/${external_home}/webui/css"/>
+      -->
+      <!-- This is our extension to JSCalendar providing also date control -->
+      <!-- We will copy JSCalendar new files with extension '_new' to normal without extension -->
+      <copy file="${jscalendar_home}/README" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-jscalendar.html"/>
+      <copy file="${jscalendar_home}/calendar_new.js" 
+            tofile="${generated_home}/${projectname}/${external_home}/webui/js/calendar.js"/>
+      <copy file="${jscalendar_home}/calendar-setup_new.js" 
+            tofile="${generated_home}/${projectname}/${external_home}/webui/js/calendar-setup.js"/>
+      <copy file="${jscalendar_home}/lang/calendar-en_new.js" 
+            tofile="${generated_home}/${projectname}/${external_home}/webui/js/calendar-en.js"/>
+      <copy file="${jscalendar_home}/calendar-system_new.css" 
+            tofile="${generated_home}/${projectname}/${external_home}/webui/css/calendar-system.css"/>
+      <copy file="${jscalendar_home}/calendar-win2k-1_new.css" 
+            tofile="${generated_home}/${projectname}/${external_home}/webui/css/calendar-win2k-1.css"/>
+      <copy file="${jscalendar_home}/calendar-win2k-2_new.css" 
+            tofile="${generated_home}/${projectname}/${external_home}/webui/css/calendar-win2k-2.css"/>
+      <copy file="${jscalendar_home}/calendar-win2k-cold-1_new.css" 
+            tofile="${generated_home}/${projectname}/${external_home}/webui/css/calendar-win2k-cold-1.css"/>
+      <copy file="${jscalendar_home}/calendar-win2k-cold-2_new.css" 
+            tofile="${generated_home}/${projectname}/${external_home}/webui/css/calendar-win2k-cold-2.css"/>
+      <copy file="${jscalendar_home}/calendar-blue_new.css" 
+            tofile="${generated_home}/${projectname}/${external_home}/webui/css/calendar-blue.css"/>
+      <copy file="${jscalendar_home}/calendar-brown_new.css" 
+            tofile="${generated_home}/${projectname}/${external_home}/webui/css/calendar-brown.css"/>
+      <copy file="${jscalendar_home}/calendar-green_new.css" 
+            tofile="${generated_home}/${projectname}/${external_home}/webui/css/calendar-green.css"/>
+   </target>
+
+   <!-- Install JSCalendar from previously installed package -->
+   <target name="installjscalendar-previous" unless="jscalendar.distro.present">
+      <copy file="${external_projects_home}/runtime/license-jscalendar.html" 
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${external_projects_home}/webui/js/calendar.js" 
+            todir="${generated_home}/${projectname}/${external_home}/webui/js/"/>
+      <copy file="${external_projects_home}/webui/js/calendar-setup.js" 
+            todir="${generated_home}/${projectname}/${external_home}/webui/js/"/>
+      <copy file="${external_projects_home}/webui/js/calendar-en.js" 
+            todir="${generated_home}/${projectname}/${external_home}/webui/js/"/>
+      <copy file="${external_projects_home}/webui/css/calendar-system.css" 
+            todir="${generated_home}/${projectname}/${external_home}/webui/css/"/>
+      <copy file="${external_projects_home}/webui/css/calendar-win2k-1.css" 
+            todir="${generated_home}/${projectname}/${external_home}/webui/css/"/>
+      <copy file="${external_projects_home}/webui/css/calendar-win2k-2.css" 
+            todir="${generated_home}/${projectname}/${external_home}/webui/css/"/>
+      <copy file="${external_projects_home}/webui/css/calendar-win2k-cold-1.css" 
+            todir="${generated_home}/${projectname}/${external_home}/webui/css/"/>
+      <copy file="${external_projects_home}/webui/css/calendar-win2k-cold-2.css" 
+            todir="${generated_home}/${projectname}/${external_home}/webui/css/"/>
+      <copy file="${external_projects_home}/webui/css/calendar-blue.css" 
+            todir="${generated_home}/${projectname}/${external_home}/webui/css/"/>
+      <copy file="${external_projects_home}/webui/css/calendar-brown.css" 
+            todir="${generated_home}/${projectname}/${external_home}/webui/css/"/>
+      <copy file="${external_projects_home}/webui/css/calendar-green.css" 
+            todir="${generated_home}/${projectname}/${external_home}/webui/css/"/>
+   </target>
+
+   <target name="help">
+     <echo>
+Each target of this build file installs all required files for each external project.
+     </echo>
+   </target>
+
+   <!-- JavaBeans Activation Framework is required by Axis -->
+<!--   
+TODO: Enable and rewrite once this is used
+   <target name="installjaf" 
+           description="Install JavaBeans Activation Framework libraries, license 
+                        and other required files">
+      <copy file="${jaf_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-jaf.txt"/>
+      <copy file="${jaf_home}/activation.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+-->
+   
+   <!-- Axis Web Services -->
+<!--   
+TODO: Enable and rewrite once this is used
+   <target name="installaxis" depends="installlogging,installjaf,installdiscovery"
+           description="Install Axis libraries, license and other required files">
+      <copy file="${axis_home}/LICENSE" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-axis.txt"/>
+      <copy file="${axis_home}/lib/axis.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${axis_home}/lib/jaxrpc.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${axis_home}/lib/wsdl4j.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${axis_home}/lib/saaj.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+-->            
+      <!-- Copy Axis tag libraries, license and other required files -->
+      <!-- These files serves to test installation of Axis -->
+<!--   
+      <copy file="${axis_home}/webapps/axis/EchoHeaders.jws"
+            todir="${generated_home}/${projectname}/${external_home}/webui/axis/"/>
+      <copy file="${axis_home}/webapps/axis/fingerprint.jsp"
+            todir="${generated_home}/${projectname}/${external_home}/webui/axis/"/>
+      <copy file="${axis_home}/webapps/axis/happyaxis.jsp"
+            todir="${generated_home}/${projectname}/${external_home}/webui/axis/"/>
+      <copy file="${axis_home}/webapps/axis/index.html"
+            todir="${generated_home}/${projectname}/${external_home}/webui/axis/"/>
+      <copy file="${axis_home}/webapps/axis/SOAPMonitorApplet.java"
+            todir="${generated_home}/${projectname}/${external_home}/webui/axis/"/>
+      <copy file="${axis_home}/webapps/axis/StockQuoteService.jws"
+            todir="${generated_home}/${projectname}/${external_home}/webui/axis/"/>
+   </target>
+-->
+   
+   <!-- API for reading and manipulation of excel files in Java -->
+<!--
+TODO: Enable and rewrite once this is used
+   <target name="installjexcelapi"
+           description="Install JExcelAPI libraries, license and other required files">
+      <copy file="${jexcelapi_home}/index.html" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-jexcelapi.html"/>    
+      <copy todir="${generated_home}/${projectname}/${external_home}/runtime">
+         <fileset dir="${jexcelapi_home}">
+            <include name="jxl.jar"/>
+         </fileset>
+      </copy>      
+   </target>
+-->   
+
+   <!-- API for reading and manipulation of pdf files in Java -->
+<!--   
+TODO: Enable and rewrite once this is used
+   <target name="installitext"
+           description="Install iText library">
+-->
+      <!-- TODO: License is missing -->
+<!--
+      <copy file="${itext_home}/iText.jar" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/iText.jar"/>
+   </target>
+-->
+
+   <!-- JavaMail API -->
+<!--   
+TODO: Enable and rewrite once this is used
+   <target name="installjavamail" depends="installjaf"
+           description="Install JavaMail libraries, license and other required files">
+      <copy file="${javamail_home}/LICENSE.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-javamail.txt"/>
+      <copy file="${javamail_home}/mail.jar" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/mail.jar"/>
+      <copy file="${javamail_home}/lib/imap.jar" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/imap.jar"/>
+      <copy file="${javamail_home}/lib/pop3.jar" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/pop3.jar"/>
+-->
+   <!--
+TODO: For Miro: Review this if these files are needed     
+      <copy file="${javamail_home}/lib/smtp.jar" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/smtp.jar"/>
+      <copy file="${javamail_home}/lib/mailapi.jar" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/mailapi.jar"/>
+   -->
+<!--
+   </target>
+-->
+   
+   <!-- GNU Hylafax Java client -->
+<!--   
+TODO: Enable and rewrite once this is used
+   <target name="installhylafax" 
+           description="Install GNU Hylafax libraries, license and other required files">
+      <copy file="${hylafax_home}/gnu.hylafax/COPYING.LIB" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-gnu-hylafax.txt"/>
+      <copy file="${hylafax_home}/gnu.hylafax/lib/gnu-hylafax.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${hylafax_home}/gnu.hylafax/lib/gnu-hylafax-util.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${hylafax_home}/gnu.hylafax/lib/gnu-inet-ftp.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+   </target>
+-->   
+
+   <!-- RxTx provides Java Communication API implementation on Linux -->
+<!--   
+TODO: Enable and rewrite once this is used
+   <target name="installrxtx"
+           description="Install RxTx libraries, license and other required files">
+      <copy file="${rxtx_home}/COPYING" 
+            tofile="${generated_home}/${projectname}/${external_home}/linux/license-rxtx.txt"/>
+-->            
+      <!-- Linux specific configuration files -->
+<!--   
+      <copy file="${rxtx_home}/javax.comm.properties"
+            todir="${generated_home}/${projectname}/${external_home}/${projectname}/config/linux"/>
+-->            
+      <!-- Linux specific libraries -->
+<!--   
+      <copy file="${rxtx_home}/jcl.jar"
+            todir="${generated_home}/${projectname}/${external_home}/linux"/>
+-->            
+      <!-- We need to copy the actual files and not the shared links -->
+<!--   
+      <copy file="${rxtx_home}/i686-pc-linux-gnu/.libs/librxtxSerial-2.0.5.so" 
+            tofile="${generated_home}/${projectname}/${external_home}/linux/librxtxSerial.so"/>
+      <copy file="${rxtx_home}/i686-pc-linux-gnu/.libs/librxtxParallel-2.0.5.so" 
+            tofile="${generated_home}/${projectname}/${external_home}/linux/librxtxParallel.so"/>
+   </target>   
+-->
+   
+   <!-- Java Communication API -->
+<!--   
+TODO: Enable and rewrite once this is used
+   <target name="installjavacomm" depends="installrxtx"
+           description="Install Java Communication API libraries, license and other required files">
+      <copy file="${javacomm_home}/win32/COMM2.0_license.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/win32/license-javacomm.txt"/>
+-->            
+      <!-- RxTx requries Solaris API to provide the functionality on Linux -->
+<!--   
+      <copy file="${javacomm_home}/solarisx86/COMM2.0_license.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/linux/license-javacomm.txt"/>
+-->
+      <!-- Win32 specific configuration files -->
+<!--   
+      <copy file="${javacomm_home}/win32/javax.comm.properties"
+            todir="${generated_home}/${projectname}/${external_home}/${projectname}/config/win32"/>
+-->            
+      <!-- Linux specific configuration files are provided by RxTx -->
+      <!-- Win32 specific libraries -->
+<!--   
+      <copy file="${javacomm_home}/win32/comm.jar"
+            todir="${generated_home}/${projectname}/${external_home}/win32"/>
+      <copy file="${javacomm_home}/win32/win32com.dll"
+            todir="${generated_home}/${projectname}/${external_home}/win32"/>
+-->            
+      <!-- Linux specific libraries -->
+      <!-- RxTx requries Solaris API to provide the functionality on Linux -->
+<!--   
+      <copy file="${javacomm_home}/solarisx86/comm.jar"
+            todir="${generated_home}/${projectname}/${external_home}/linux"/>
+   </target>   
+-->
+   
+   <!-- Epson JavaPOS in Epson implementation of Java Point Of Sale API -->
+<!--   
+TODO: Enable and rewrite once this is used
+   <target name="installepsonjavapos" depends="installjavacomm"
+           description="Install Epson JavaPOS libraries, license and other required files">
+-->           
+      <!-- TODO: License is missing -->
+      <!-- Common configuration files -->
+<!--   
+      <copy file="${epsonjavapos_home}/javapos/epson.trace.properties"
+            todir="${generated_home}/${projectname}/${external_home}/${projectname}/config"/>
+-->            
+      <!-- Win32 specific configuration files -->
+      <!--
+      Let each application copy its specific configuration file
+      since the application has to set logical name of the device
+      <copy todir="${generated_home}/${projectname}/${external_home}/${projectname}/config/win32">
+         <fileset dir="${epsonjavapos_home}/win32">
+            <include name="jpos.xml"/>
+         </fileset>
+      </copy>      
+      -->
+      <!-- Linux specific configuration files -->
+      <!--
+      Let each application copy its specific configuration file
+      since the application has to set logical name of the device
+      <copy todir="${generated_home}/${projectname}/${external_home}/${projectname}/config/linux">
+         <fileset dir="${epsonjavapos_home}/linux">
+            <include name="jpos.xml"/>
+         </fileset>
+      </copy>      
+      -->
+      <!-- Common libraries -->
+<!--   
+      <copy file="${epsonjavapos_home}/javapos/lib/jpos17.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+      <copy file="${epsonjavapos_home}/javapos/lib/xerces.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime"/>
+-->            
+      <!-- Win32 specific libraries -->
+<!--   
+      <copy file="${epsonjavapos_home}/win32/epsonJposServiceCommon.jar"
+            todir="${generated_home}/${projectname}/${external_home}/win32"/>
+      <copy file="${epsonjavapos_home}/win32/epsonJposService170.jar"
+            todir="${generated_home}/${projectname}/${external_home}/win32"/>
+-->            
+      <!-- Linux specific libraries -->
+<!--   
+      <copy file="${epsonjavapos_home}/linux/epsonJposServiceCommon.jar"
+            todir="${generated_home}/${projectname}/${external_home}/linux"/>
+      <copy file="${epsonjavapos_home}/linux/epsonJposService172.jar"
+            todir="${generated_home}/${projectname}/${external_home}/linux"/>
+   </target>
+-->
+
+   <!-- Java Advanced Imaging imaging software -->
+<!--   
+TODO: Enable and rewrite once this is used
+   <target name="installjai"
+           description="Install Java Advanced Imaging libraries, license 
+                        and other required files">
+      <copy file="${jai_home}/LICENSE-jai.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-jai.txt"/>
+      <copy file="${jai_home}/lib/jai_codec.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/"/>
+      <copy file="${jai_home}/lib/jai_core.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/"/>
+      <copy file="${jai_home}/lib/mlibwrapper_jai.jar"
+            todir="${generated_home}/${projectname}/${external_home}/runtime/"/>
+-->            
+      <!-- TODO: JAI is shipped with some native libraries *.so, *.dll,
+           add them here when you have them -->
+<!--
+   </target>
+-->
+
+   <!-- JMagick is Java interface to ImageMagick imaging software -->
+<!--   
+TODO: Enable and rewrite once this is used
+   <target name="installjmagick"
+           description="Install JMagick libraries, license and other required files">
+      <copy file="${jmagick_home}/LICENSE" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-jmagick.txt"/>    
+      <copy file="${jmagick_home}/linux/imagemagick/Copyright.txt" 
+            tofile="${generated_home}/${projectname}/${external_home}/runtime/license-imagemagick.txt"/>    
+      <copy file="${jmagick_home}/win32/jmagick.jar"
+            todir="${generated_home}/${projectname}/${external_home}/win32"/>
+      <copy file="${jmagick_home}/win32/jmagick.dll"
+            todir="${generated_home}/${projectname}/${external_home}/win32"/>
+      <copy file="${jmagick_home}/linux/lib/jmagick.jar"
+            todir="${generated_home}/${projectname}/${external_home}/linux"/>
+      <copy file="${jmagick_home}/linux/lib/libJMagick.so.5.0.560"
+            tofile="${generated_home}/${projectname}/${external_home}/linux/libJMagick.so"/>
+      <copy file="${jmagick_home}/linux/imagemagick/lib/libMagick.so.6.0.0"
+            tofile="${generated_home}/${projectname}/${external_home}/linux/libMagick.so.6"/>
+
+      <copy file="${jmagick_home}/linux/imagemagick/lib/ImageMagick-5.5.7/colors.mgk"
+            tofile="${generated_home}/${projectname}/${external_home}/ImageMagick-5.5.7/colors.mgk"/>
+      <copy file="${jmagick_home}/linux/imagemagick/lib/ImageMagick-5.5.7/delegates.mgk"
+            tofile="${generated_home}/${projectname}/${external_home}/ImageMagick-5.5.7/delegates.mgk"/>
+      <copy file="${jmagick_home}/linux/imagemagick/lib/ImageMagick-5.5.7/english.mgk"
+            tofile="${generated_home}/${projectname}/${external_home}/ImageMagick-5.5.7/english.mgk"/>
+      <copy file="${jmagick_home}/linux/imagemagick/lib/ImageMagick-5.5.7/locale.mgk"
+            tofile="${generated_home}/${projectname}/${external_home}/ImageMagick-5.5.7/locale.mgk"/>
+      <copy file="${jmagick_home}/linux/imagemagick/lib/ImageMagick-5.5.7/log.mgk"
+            tofile="${generated_home}/${projectname}/${external_home}/ImageMagick-5.5.7/log.mgk"/>
+      <copy file="${jmagick_home}/linux/imagemagick/lib/ImageMagick-5.5.7/magic.mgk"
+            tofile="${generated_home}/${projectname}/${external_home}/ImageMagick-5.5.7/magic.mgk"/>
+      <copy file="${jmagick_home}/linux/imagemagick/lib/ImageMagick-5.5.7/type-ghostscript.mgk"
+            tofile="${generated_home}/${projectname}/${external_home}/ImageMagick-5.5.7/type-ghostscript.mgk"/>
+      <copy file="${jmagick_home}/linux/imagemagick/lib/ImageMagick-5.5.7/type.mgk"
+            tofile="${generated_home}/${projectname}/${external_home}/ImageMagick-5.5.7/type.mgk"/>
+      <copy file="${jmagick_home}/linux/imagemagick/lib/ImageMagick-5.5.7/type-solaris.mgk"
+            tofile="${generated_home}/${projectname}/${external_home}/ImageMagick-5.5.7/type-solaris.mgk"/>
+      <copy file="${jmagick_home}/linux/imagemagick/lib/ImageMagick-5.5.7/type-windows.mgk"
+            tofile="${generated_home}/${projectname}/${external_home}/ImageMagick-5.5.7/type-windows"/>
+      <copy file="${jmagick_home}/linux/imagemagick/lib/ImageMagick-5.5.7/modules-Q8/coders/modules.mgk"
+            tofile="${generated_home}/${projectname}/${external_home}/ImageMagick-5.5.7/modules-Q8/coders/modules.mgk"/>
+   </target>
+-->
+
+</project>
